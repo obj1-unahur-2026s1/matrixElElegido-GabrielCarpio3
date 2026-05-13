@@ -1,9 +1,86 @@
+import matrix.*
 
+describe "tests nave y pasajeros" {
 
-describe "group of tests " {
-
-  test "test 01" {
-    assert.equals(100, 50+50)
+  // --- cantidad de pasajeros ---
+  test "cantidad de pasajeros" {
+    nave.agregarPasajero(neo)
+    nave.agregarPasajero(morfeo)
+    assert.equals(2, nave.cantidadPasajeros())
   }
 
+  // --- pasajero con mayor vitalidad ---
+  test "pasajero con mayor vitalidad" {
+    nave.agregarPasajero(neo)
+    nave.agregarPasajero(morfeo)
+    assert.equals(neo, nave.pasajeroMayorVitalidad())
+  }
+
+  // --- esta el elegido ---
+  test "esta el elegido en la nave" {
+    nave.agregarPasajero(neo)
+    nave.agregarPasajero(trinity)
+    assert.that(nave.estaElElegido())
+  }
+
+  // --- no esta el elegido ---
+  test "no esta el elegido" {
+    nave.agregarPasajero(morfeo)
+    nave.agregarPasajero(trinity)
+    assert.notThat(nave.estaElElegido())
+  }
+
+  // --- equilibrio ---
+  test "nave equilibrada" {
+    nave.agregarPasajero(morfeo) // 8
+    nave.agregarPasajero(trinity) // 0
+    assert.notThat(nave.estaEquilibrada())
+  }
+
+  test "nave equilibrada caso valido" {
+    nave.agregarPasajero(morfeo) // 8
+    nave.agregarPasajero(neo)    // 10
+    assert.that(nave.estaEquilibrada())
+  }
+
+  // --- choque ---
+  test "choque vacia la nave" {
+    nave.agregarPasajero(neo)
+    nave.agregarPasajero(morfeo)
+
+    nave.choque()
+
+    assert.equals(0, nave.cantidadPasajeros())
+  }
+
+  test "choque hace saltar a los pasajeros" {
+    var energiaInicial = neo.energia()
+    nave.agregarPasajero(neo)
+
+    nave.choque()
+
+    assert.that(neo.energia() < energiaInicial)
+  }
+
+  // --- acelerar ---
+  test "acelerar hace saltar a todos menos al elegido" {
+    nave.agregarPasajero(neo)      // elegido
+    nave.agregarPasajero(morfeo)   // no elegido
+
+    var vitalidadInicial = morfeo.vitalidad()
+
+    nave.acelerar()
+
+    assert.that(morfeo.vitalidad() < vitalidadInicial)
+  }
+
+  test "acelerar no afecta al elegido" {
+    nave.agregarPasajero(neo)
+
+    var energiaInicial = neo.energia()
+
+    nave.acelerar()
+
+    assert.equals(energiaInicial, neo.energia())
+  }
 }
